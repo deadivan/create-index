@@ -29,7 +29,7 @@ describe('writeIndex()', () => {
         expect(indexCode).to.equal(codeExample(`
 'create index';
 
-export bar from './bar';
+export * as bar from './bar';
 export foo from './foo.js';
         `));
     });

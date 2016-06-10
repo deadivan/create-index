@@ -13,9 +13,9 @@ export default (directoryPaths) => {
         validateTargetDirectory(directoryPath);
     });
 
-    _.forEach(sortedDirectoryPaths, (directoryPath) => {
+    _.forEach(sortedDirectoryPaths, (directoryPath) => {      
         const siblings = readDirectory(directoryPath);
-        const indexCode = createIndexCode(siblings);
+        const indexCode = createIndexCode(siblings, directoryPath);
         const indexFilePath = path.resolve(directoryPath, 'index.js');
 
         fs.writeFileSync(indexFilePath, indexCode);

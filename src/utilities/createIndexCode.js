@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
 
 const safeVariableName = (fileName) => {
     const indexOfDot = fileName.indexOf('.');
@@ -10,11 +12,22 @@ const safeVariableName = (fileName) => {
     }
 };
 
-const buildExportBlock = (files) => {
+const buildExportBlock = (files, directoryPath) => {
     let importBlock;
 
     importBlock = _.map(files, (fileName) => {
-        return 'export ' + safeVariableName(fileName) + ' from \'./' + fileName + '\';';
+        let block = safeVariableName(fileName);
+
+        if( directoryPath ){
+            const absolutePath = path.resolve(directoryPath, fileName);
+            const isDirectory = fs.statSync(absolutePath).isDirectory();
+
+            if( isDirectory ){
+                block = '* as ' + block;                      
+            }
+        }
+
+        return 'export ' + block + ' from \'./' + fileName + '\';';
     });
 
     importBlock = importBlock.join('\n');
@@ -22,15 +35,14 @@ const buildExportBlock = (files) => {
     return importBlock;
 };
 
-export default (filePaths) => {
+export default (filePaths, directoryPath) => {
     let code;
 
     code = '\'create index\';\n\n';
 
     if (filePaths.length) {
         const sortedFilePaths = filePaths.sort();
-
-        code += buildExportBlock(sortedFilePaths) + '\n\n';
+        code += buildExportBlock(sortedFilePaths, directoryPath) + '\n\n';
     }
 
     return code;

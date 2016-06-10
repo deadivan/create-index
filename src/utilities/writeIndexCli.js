@@ -35,7 +35,7 @@ export default (directoryPaths, options = {}) => {
 
         const siblings = readDirectory(directoryPath);
 
-        const indexCode = createIndexCode(siblings);
+        const indexCode = createIndexCode(siblings, directoryPath);
 
         const indexFilePath = path.resolve(directoryPath, 'index.js');
 
